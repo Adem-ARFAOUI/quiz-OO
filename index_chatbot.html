@@ -67,7 +67,7 @@
 
     <script>
         async function getStats() {
-            let res = await fetch("http://localhost:3000/api/stats"); // ⚡ appelle ton backend
+            let res = await fetch("https://quiz-oo.onrender.com/api/stats"); // ⚡ appelle ton backend
             return await res.json();
         }
 
@@ -103,5 +103,6 @@
     </script>
 
 </body>
+
 
 </html>
