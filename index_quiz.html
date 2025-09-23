@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz OO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f4f4f9;
+        }
+
+        .quiz {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .question {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            width: 200px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📝 Quiz sur la Programmation Orientée Objet</h1>
+
+    <div class="quiz">
+        <!-- Identifiant de l'étudiant -->
+        <label>Votre identifiant étudiant :</label><br>
+        <input type="text" id="studentId" placeholder="ex: etu123"><br><br>
+
+        <div class="question">
+            <p>Q1 : Quelle est la différence entre une classe et un objet ?</p>
+            <label><input type="radio" name="q1" value="a"> Une classe est une instance, un objet est un
+                plan.</label><br>
+            <label><input type="radio" name="q1" value="b"> Une classe est un plan, un objet est une
+                instance.</label><br>
+            <label><input type="radio" name="q1" value="c"> Ce sont des synonymes.</label>
+        </div>
+
+        <div class="question">
+            <p>Q2 : Quel principe OO signifie "un objet peut prendre plusieurs formes" ?</p>
+            <label><input type="radio" name="q2" value="a"> Encapsulation</label><br>
+            <label><input type="radio" name="q2" value="b"> Héritage</label><br>
+            <label><input type="radio" name="q2" value="c"> Polymorphisme</label>
+        </div>
+
+        <button onclick="corrigerQuiz()">Valider le Quiz</button>
+        <p id="resultat"></p>
+    </div>
+
+    <script>
+        async function envoyerResultat(studentId, score) {
+            await fetch("http://localhost:3000/api/results", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ studentId, score })
+            });
+            alert("✅ Résultat enregistré dans la base !");
+        }
+
+        function corrigerQuiz() {
+            let bonnesReponses = { q1: "b", q2: "c" };
+            let score = 0;
+            let total = 2;
+
+            if (document.querySelector('input[name="q1"]:checked')?.value === bonnesReponses.q1) score++;
+            if (document.querySelector('input[name="q2"]:checked')?.value === bonnesReponses.q2) score++;
+
+            let pourcentage = (score / total * 100).toFixed(2);
+            document.getElementById("resultat").innerText = "Votre score : " + pourcentage + "%";
+
+            // ✅ Envoi dans MongoDB
+            let studentId = document.getElementById("studentId").value.trim();
+            if (!studentId) {
+                alert("⚠️ Merci d’entrer votre identifiant étudiant !");
+                return;
+            }
+            envoyerResultat(studentId, Number(pourcentage));
+        }
+    </script>
+
+</body>
+
+</html>

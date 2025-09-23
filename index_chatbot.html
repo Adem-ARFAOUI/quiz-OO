@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot Statistiques</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f4f4f9;
+        }
+
+        .chatbot {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-area {
+            height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+
+        .bot {
+            color: green;
+        }
+
+        .user {
+            color: blue;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 5px;
+        }
+
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🤖 Chatbot Statistiques du Quiz OO</h1>
+
+    <div class="chatbot">
+        <div id="chat-area"></div>
+        <input type="text" id="user-input" placeholder="Posez une question... (ex: pourcentage, moyenne)">
+        <button onclick="envoyer()">Envoyer</button>
+    </div>
+
+    <script>
+        async function getStats() {
+            let res = await fetch("http://localhost:3000/api/stats"); // ⚡ appelle ton backend
+            return await res.json();
+        }
+
+        async function chatbot(question) {
+            let stats = await getStats();
+
+            if (stats.message) return " " + stats.message;
+
+            if (question.includes("pourcentage")) {
+                return `📊 ${stats.pourcentageCompris}% des étudiants ont compris le cours.`;
+            } else if (question.includes("moyenne")) {
+                return `📈 La moyenne générale est ${stats.moyenne}%.`;
+            } else if (question.includes("combien")) {
+                return `👥 ${stats.total} étudiants ont participé au quiz.`;
+            } else {
+                return " Je peux répondre sur 'pourcentage', 'moyenne' ou 'combien'.";
+            }
+        }
+
+        async function envoyer() {
+            let input = document.getElementById("user-input").value;
+            if (!input) return;
+
+            let chatArea = document.getElementById("chat-area");
+            chatArea.innerHTML += `<p class="user"><b>Vous :</b> ${input}</p>`;
+
+            let reponse = await chatbot(input.toLowerCase());
+            chatArea.innerHTML += `<p class="bot"><b>Bot :</b> ${reponse}</p>`;
+
+            document.getElementById("user-input").value = "";
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+
+</body>
+
+</html>
