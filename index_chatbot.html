@@ -4,103 +4,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Chatbot Statistiques</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f4f4f9;
-        }
-
-        .chatbot {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        #chat-area {
-            height: 250px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #fafafa;
-        }
-
-        .bot {
-            color: green;
-        }
-
-        .user {
-            color: blue;
-        }
-
-        input[type="text"] {
-            width: 80%;
-            padding: 5px;
-        }
-
-        button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body
+    class="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
 
-    <h1>🤖 Chatbot Statistiques du Quiz OO</h1>
+    <div class="chatbot bg-white shadow-2xl rounded-2xl w-full max-w-md flex flex-col overflow-hidden">
 
-    <div class="chatbot">
-        <div id="chat-area"></div>
-        <input type="text" id="user-input" placeholder="Posez une question... (ex: pourcentage, moyenne)">
-        <button onclick="envoyer()">Envoyer</button>
-    </div>
+        <!-- Titre -->
+        <h1 class="text-xl sm:text-2xl font-bold text-center text-indigo-600 bg-gray-100 py-4 border-b">
+             Chatbot Statistiques du Quiz OO
+        </h1>
 
-    <script>
-        async function getStats() {
-            let res = await fetch("https://quiz-oo.onrender.com/api/stats"); // ⚡ appelle ton backend
-            return await res.json();
-        }
+        <!-- Zone de chat -->
+        <div id="chat-area" class="flex-1 p-4 overflow-y-auto space-y-3 text-sm sm:text-base">
+            <!-- Les messages viendront ici dynamiquement -->
+        </div>
 
-        async function chatbot(question) {
-            let stats = await getStats();
+        <!-- Zone d'entrée -->
+        <div class="flex items-center gap-2 p-4 border-t bg-gray-50">
+            <input type="text" id="user-input" placeholder="Posez une question... (ex: pourcentage, moyenne)"
+                class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm sm:text-base">
+            <button onclick="envoyer()"
+                class="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 active:scale-95 transition-transform">
+                Envoyer
+            </button>
+        </div>
 
-            if (stats.message) return " " + stats.message;
-
-            if (question.includes("pourcentage")) {
-                return `📊 ${stats.pourcentageCompris}% des étudiants ont compris le cours.`;
-            } else if (question.includes("moyenne")) {
-                return `📈 La moyenne générale est ${stats.moyenne}%.`;
-            } else if (question.includes("combien")) {
-                return `👥 ${stats.total} étudiants ont participé au quiz.`;
-            } else {
-                return " Je peux répondre sur 'pourcentage', 'moyenne' ou 'combien'.";
+        <script>
+            async function getStats() {
+                let res = await fetch("https://quiz-oo.onrender.com/api/stats"); // ⚡ appelle ton backend
+                return await res.json();
             }
-        }
 
-        async function envoyer() {
-            let input = document.getElementById("user-input").value;
-            if (!input) return;
+            async function chatbot(question) {
+                let stats = await getStats();
 
-            let chatArea = document.getElementById("chat-area");
-            chatArea.innerHTML += `<p class="user"><b>Vous :</b> ${input}</p>`;
+                if (stats.message) return " " + stats.message;
 
-            let reponse = await chatbot(input.toLowerCase());
-            chatArea.innerHTML += `<p class="bot"><b>Bot :</b> ${reponse}</p>`;
+                if (question.includes("pourcentage")) {
+                    return `📊 ${stats.pourcentageCompris}% des étudiants ont compris le cours.`;
+                } else if (question.includes("moyenne")) {
+                    return `📈 La moyenne générale est ${stats.moyenne}%.`;
+                } else if (question.includes("combien")) {
+                    return `👥 ${stats.total} étudiants ont participé au quiz.`;
+                } else {
+                    return " Je peux répondre sur 'pourcentage', 'moyenne' ou 'combien'.";
+                }
+            }
 
-            document.getElementById("user-input").value = "";
-            chatArea.scrollTop = chatArea.scrollHeight;
-        }
-    </script>
+            async function envoyer() {
+                let input = document.getElementById("user-input").value;
+                if (!input) return;
+
+                let chatArea = document.getElementById("chat-area");
+                chatArea.innerHTML += `<p class="user"><b>Vous :</b> ${input}</p>`;
+
+                let reponse = await chatbot(input.toLowerCase());
+                chatArea.innerHTML += `<p class="bot"><b>Bot :</b> ${reponse}</p>`;
+
+                document.getElementById("user-input").value = "";
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+        </script>
 
 </body>
 
