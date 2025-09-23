@@ -7,9 +7,10 @@ app.use(cors());
 app.use(express.json());
 
 // 📌 1. Connexion à MongoDB Atlas
-mongoose
-  .connect(
-    "mongodb+srv://ademarfaoui2018_db_user:HRrhJug6Z6eXDYQX@quiz.ldo7nmy.mongodb.net/?retryWrites=true&w=majority&appName=quiz"
+mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
   )
   .then(() => {
     console.log("connection successfuly");
@@ -60,3 +61,4 @@ app.get("/api/export", async (req, res) => {
 
 // 🚀 Lancer le serveur
 app.listen(3000, () => console.log(" Serveur lancé sur http://localhost:3000"));
+
