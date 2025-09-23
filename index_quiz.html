@@ -4,72 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <title>Quiz OO</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background: #f4f4f9;
-        }
-
-        .quiz {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .question {
-            margin-bottom: 15px;
-        }
-
-        input[type="text"] {
-            padding: 5px;
-            width: 200px;
-            margin-bottom: 15px;
-        }
-
-        button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            background: #4CAF50;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body
+    class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center p-4">
 
-    <h1>📝 Quiz sur la Programmation Orientée Objet</h1>
+    <div class="quiz bg-white shadow-2xl rounded-2xl p-6 w-full max-w-md">
 
-    <div class="quiz">
-        <!-- Identifiant de l'étudiant -->
-        <label>Votre identifiant étudiant :</label><br>
-        <input type="text" id="studentId" placeholder="ex: etu123"><br><br>
+        <h1 class="text-2xl font-bold text-center text-indigo-600 mb-6">
+            Quiz sur la Programmation Orientée Objet
+        </h1>
 
-        <div class="question">
-            <p>Q1 : Quelle est la différence entre une classe et un objet ?</p>
-            <label><input type="radio" name="q1" value="a"> Une classe est une instance, un objet est un
-                plan.</label><br>
-            <label><input type="radio" name="q1" value="b"> Une classe est un plan, un objet est une
-                instance.</label><br>
-            <label><input type="radio" name="q1" value="c"> Ce sont des synonymes.</label>
+        <div class="mb-6">
+            <label class="block font-medium text-gray-700 mb-2">Votre identifiant étudiant :</label>
+            <input type="text" id="studentId" placeholder="ex: etu123"
+                class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
         </div>
 
-        <div class="question">
-            <p>Q2 : Quel principe OO signifie "un objet peut prendre plusieurs formes" ?</p>
-            <label><input type="radio" name="q2" value="a"> Encapsulation</label><br>
-            <label><input type="radio" name="q2" value="b"> Héritage</label><br>
-            <label><input type="radio" name="q2" value="c"> Polymorphisme</label>
+
+        <div class="question mb-6">
+            <p class="font-semibold text-gray-800 mb-3">Q1 : Quelle est la différence entre une classe et un objet ?</p>
+            <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                <input type="radio" name="q1" value="a" class="text-indigo-500">
+                <span>Une classe est une instance, un objet est un plan.</span>
+            </label>
+            <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                <input type="radio" name="q1" value="b" class="text-indigo-500">
+                <span>Une classe est un plan, un objet est une instance.</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="q1" value="c" class="text-indigo-500">
+                <span>Ce sont des synonymes.</span>
+            </label>
         </div>
 
-        <button onclick="corrigerQuiz()">Valider le Quiz</button>
-        <p id="resultat"></p>
+        <div class="question mb-6">
+            <p class="font-semibold text-gray-800 mb-3">Q2 : Quel principe OO signifie "un objet peut prendre plusieurs
+                formes" ?</p>
+            <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                <input type="radio" name="q2" value="a" class="text-indigo-500">
+                <span>Encapsulation</span>
+            </label>
+            <label class="flex items-center gap-2 mb-2 cursor-pointer">
+                <input type="radio" name="q2" value="b" class="text-indigo-500">
+                <span>Héritage</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="q2" value="c" class="text-indigo-500">
+                <span>Polymorphisme</span>
+            </label>
+        </div>
+
+
+        <button onclick="corrigerQuiz()" id="valider" class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md 
+                   hover:bg-indigo-700 active:scale-95 transition-transform">
+            Valider le Quiz
+        </button>
+
+        <p id="resultat" class="mt-4 text-center font-bold text-lg text-green-600"></p>
     </div>
 
     <script>
@@ -80,6 +73,7 @@
                 body: JSON.stringify({ studentId, score })
             });
             alert("✅ Résultat enregistré dans la base !");
+
         }
 
         function corrigerQuiz() {
@@ -96,10 +90,40 @@
             // ✅ Envoi dans MongoDB
             let studentId = document.getElementById("studentId").value.trim();
             if (!studentId) {
-                alert("⚠️ Merci d’entrer votre identifiant étudiant !");
+                alert("⚠️ Merci d'entrer votre identifiant étudiant !");
                 return;
+
             }
             envoyerResultat(studentId, Number(pourcentage));
+
+            const radios = document.getElementsByName('q1');
+            const radios2 = document.getElementsByName('q2');
+            let selection = null;
+            // Chercher le choix sélectionné
+            for (let i = 0; i < radios.length; i++) {
+                for (let j = 0; j < radios2.length; j++) {
+                    if (radios[i].checked && radios2[j].checked) {
+                        selection = radios[i].value;
+                        break;
+
+                    }
+                }
+            }
+
+            if (selection) {
+                document.getElementById('valider').disabled = true;
+            } else {
+                alert("Veuillez choisir une option avant de valider.");
+            }
+
+
+            for (let i = 0; i < radios.length; i++) {
+                radios[i].checked = false;
+            }
+            for (let i = 0; i < radios2.length; i++) {
+                radios2[i].checked = false;
+            }
+
         }
     </script>
 
@@ -107,3 +131,4 @@
 
 
 </html>
+
